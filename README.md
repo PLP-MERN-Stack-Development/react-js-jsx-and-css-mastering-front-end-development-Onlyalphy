@@ -110,16 +110,20 @@ The application is fully responsive:
 ![alt text](screenshots/Lightmode.png)
 
 ### Dark Mode
-![Dark Mode](./screenshots/dark-mode.png)
+![Dark Mode]
+![alt text](screenshots/darkmode.png)
 
 ### Task Manager
-![Task Manager](./screenshots/task-manager.png)
+![Task Manager]
+![alt text](screenshots/Taskmanager.png)
 
 ### API Data Display
-![API Data](./screenshots/api-data.png)
+![API Data]
+![alt text](screenshots/APIview.png)
 
 ### Mobile View
-![Mobile View](./screenshots/mobile-view.png)
+![Mobile View]
+![alt text](screenshots/mobileview.png)
 
 ## 🌐 Live Demo
 
