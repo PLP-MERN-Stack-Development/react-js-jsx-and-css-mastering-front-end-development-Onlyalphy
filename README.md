@@ -106,7 +106,8 @@ The application is fully responsive:
 ## 📸 Screenshots
 
 ### Light Mode
-![Light Mode](./screenshots/light-mode.png)
+![Light Mode]
+![alt text](screenshots/Lightmode.png)
 
 ### Dark Mode
 ![Dark Mode](./screenshots/dark-mode.png)
@@ -122,7 +123,7 @@ The application is fully responsive:
 
 ## 🌐 Live Demo
 
-[View Live Demo](your-deployment-url-here)
+View Live Demo: https://plp-project-manager.netlify.app/
 
 ## 🚀 Deployment
 
@@ -133,7 +134,7 @@ This project can be deployed to:
 
 ## 👤 Author
 
-Your Name - [GitHub Profile](https://github.com/yourusername)
+Your Name - [GitHub Profile](https://github.com/Onlyalphy)
 
 ## 📄 License
 
