@@ -1,22 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from './Button';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
-/**
- * Custom hook for managing tasks with localStorage persistence
- */
-const useLocalStorageTasks = () => {
-  // Initialize state from localStorage or with empty array
-  const [tasks, setTasks] = useState(() => {
-    const savedTasks = localStorage.getItem('tasks');
-    return savedTasks ? JSON.parse(savedTasks) : [];
-  });
+const TaskManager = () => {
+  const [tasks, setTasks] = useLocalStorage('tasks', []);
+  const [newTaskText, setNewTaskText] = useState('');
+  const [filter, setFilter] = useState('all');
 
-  // Update localStorage when tasks change
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
-
-  // Add a new task
   const addTask = (text) => {
     if (text.trim()) {
       setTasks([
@@ -31,7 +21,6 @@ const useLocalStorageTasks = () => {
     }
   };
 
-  // Toggle task completion status
   const toggleTask = (id) => {
     setTasks(
       tasks.map((task) =>
@@ -40,49 +29,36 @@ const useLocalStorageTasks = () => {
     );
   };
 
-  // Delete a task
   const deleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  return { tasks, addTask, toggleTask, deleteTask };
-};
-
-/**
- * TaskManager component for managing tasks
- */
-const TaskManager = () => {
-  const { tasks, addTask, toggleTask, deleteTask } = useLocalStorageTasks();
-  const [newTaskText, setNewTaskText] = useState('');
-  const [filter, setFilter] = useState('all');
-
-  // Filter tasks based on selected filter
   const filteredTasks = tasks.filter((task) => {
     if (filter === 'active') return !task.completed;
     if (filter === 'completed') return task.completed;
-    return true; // 'all' filter
+    return true;
   });
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     addTask(newTaskText);
     setNewTaskText('');
   };
 
-  return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 className="text-2xl font-bold mb-6">Task Manager</h2>
+  const activeTasks = tasks.filter(t => !t.completed).length;
 
-      {/* Task input form */}
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
+      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Task Manager</h2>
+
       <form onSubmit={handleSubmit} className="mb-6">
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input
             type="text"
             value={newTaskText}
             onChange={(e) => setNewTaskText(e.target.value)}
             placeholder="Add a new task..."
-            className="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+            className="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           />
           <Button type="submit" variant="primary">
             Add Task
@@ -90,53 +66,51 @@ const TaskManager = () => {
         </div>
       </form>
 
-      {/* Filter buttons */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-4">
         <Button
           variant={filter === 'all' ? 'primary' : 'secondary'}
           size="sm"
           onClick={() => setFilter('all')}
         >
-          All
+          All ({tasks.length})
         </Button>
         <Button
           variant={filter === 'active' ? 'primary' : 'secondary'}
           size="sm"
           onClick={() => setFilter('active')}
         >
-          Active
+          Active ({activeTasks})
         </Button>
         <Button
           variant={filter === 'completed' ? 'primary' : 'secondary'}
           size="sm"
           onClick={() => setFilter('completed')}
         >
-          Completed
+          Completed ({tasks.length - activeTasks})
         </Button>
       </div>
 
-      {/* Task list */}
       <ul className="space-y-2">
         {filteredTasks.length === 0 ? (
           <li className="text-gray-500 dark:text-gray-400 text-center py-4">
-            No tasks found
+            {filter === 'all' ? 'No tasks yet. Add one above!' : `No ${filter} tasks`}
           </li>
         ) : (
           filteredTasks.map((task) => (
             <li
               key={task.id}
-              className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
+              className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700 gap-2"
             >
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
                   checked={task.completed}
                   onChange={() => toggleTask(task.id)}
-                  className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
+                  className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
                 />
                 <span
                   className={`${
-                    task.completed ? 'line-through text-gray-500 dark:text-gray-400' : ''
+                    task.completed ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white'
                   }`}
                 >
                   {task.text}
@@ -155,14 +129,13 @@ const TaskManager = () => {
         )}
       </ul>
 
-      {/* Task stats */}
       <div className="mt-6 text-sm text-gray-500 dark:text-gray-400">
         <p>
-          {tasks.filter((task) => !task.completed).length} tasks remaining
+          {activeTasks} {activeTasks === 1 ? 'task' : 'tasks'} remaining
         </p>
       </div>
     </div>
   );
 };
 
-export default TaskManager; 
+export default TaskManager;
